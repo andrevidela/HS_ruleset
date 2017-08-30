@@ -50,6 +50,17 @@ alextrazaEffect newMax (MkPlayerHP maxHP armor bonusHP currentHitPoints)  with (
   alextrazaEffect (maxHP + (S x)) (MkPlayerHP maxHP armor bonusHP currentHitPoints)  | (CmpGT x) =
     MkPlayerHP maxHP armor (S x) (Val (maxHP + (S x)) $ lteEq (maxHP + (S x)))
 
+Card : Type
+
+data Deck : (card : Type) -> Type where
+  MkDeck : Vect n card -> Nat -> Deck card
+
+-- Attempts to draw a card, returns the card and the new state of the deck.
+-- Either the deck is empty and the overdraw count is returned, or the card is successfully drawn
+drawCard : Deck card -> (Either Nat card, Deck card)
+drawCard (MkDeck [] overDraw) = (Left (S overDraw), MkDeck [] (S overDraw))
+drawCard (MkDeck (x :: xs) overDraw) = (Right x, MkDeck xs overDraw)
+
 mutual
 
   record Player where
@@ -57,6 +68,7 @@ mutual
     type : PlayerType
     hitPoints : PlayerHP
     heroPower : Hearthstone -> Hearthstone
+    deck : Deck Card
     board : BoardSide 7
 
   record Hearthstone where
