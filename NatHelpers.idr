@@ -22,6 +22,21 @@ lteRightPlus : LTE k j -> LTE k (j + l)
 lteRightPlus LTEZero = LTEZero
 lteRightPlus (LTESucc x) = LTESucc (lteRightPlus x)
 
+export
+lteRightPlusLeft : LTE n (n + k) -> LTE n ((n + j) + k)
+lteRightPlusLeft LTEZero = LTEZero
+lteRightPlusLeft (LTESucc x) = LTESucc (lteRightPlusLeft x)
+
+export
+lteRightPlusNat : (n : Nat) -> LTE n (n + k)
+lteRightPlusNat Z = LTEZero
+lteRightPlusNat (S k) = LTESucc (lteRightPlusNat k)
+
+export
+lteEq : (n : Nat) -> LTE n n
+lteEq Z = LTEZero
+lteEq (S k) = LTESucc (lteEq k)
+
 public export
 data NatNeg = Pos Nat | Neg Nat
 

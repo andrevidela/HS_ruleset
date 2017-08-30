@@ -46,9 +46,9 @@ subtractBounded (Val Z ok) (S k) = Val Z ok
 subtractBounded (Val (S j) ok) (S k) = subtractBounded (Val j (lteLeftSucc ok)) k
 
 export
-lteLeftSuccPlus : (value : Nat) -> BoundedNat (plus (plus value (S r1)) r2)
-lteLeftSuccPlus Z = Val 0 LTEZero
-lteLeftSuccPlus (S k) = ?rest
+boundPlusRight : (value : Nat) -> BoundedNat (value + more)
+boundPlusRight value = Val value (lteRightPlusNat value)
+
 
 export
 addBounded : BoundedNat b -> Nat -> BoundedNat b

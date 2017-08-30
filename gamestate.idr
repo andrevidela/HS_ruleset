@@ -34,17 +34,21 @@ InitialHP hp = MkPlayerHP hp 0 0 (Val hp lteRightPlusZero)
 regularHeal : (heal : Nat) -> PlayerHP -> PlayerHP
 regularHeal heal (MkPlayerHP maxHP armor bonusHP currentHitPoints) =
   case boundedAdd currentHitPoints heal of
-       Left overflow => MkPlayerHP maxHP armor bonusHP (Val maxHP (lteRightPlus maxHP))
+       Left overflow => MkPlayerHP maxHP armor bonusHP (Val maxHP (lteRightPlus ?lte))
        Right newHP => MkPlayerHP maxHP armor bonusHP newHP
 
 alextrazaEffect : (newMax : Nat) -> PlayerHP -> PlayerHP
 alextrazaEffect newMax (MkPlayerHP maxHP armor bonusHP currentHitPoints)  with (cmp newMax maxHP)
+  -- new max is lower than the current max HP -> reduce the current amout of hp
   alextrazaEffect newMax (MkPlayerHP (newMax + (S y)) armor bonusHP currentHitPoints)  | (CmpLT y) =
-    MkPlayerHP (newMax + (S y)) armor bonusHP (?prf)
+    let upperBoundPrf = lteRightPlusLeft (lteRightPlusNat newMax) in
+      MkPlayerHP (newMax + (S y)) armor bonusHP $ Val newMax upperBoundPrf
+  -- new max is equal to the current max HP -> set current hp to max hp
   alextrazaEffect maxHP (MkPlayerHP maxHP armor bonusHP currentHitPoints)  | CmpEQ =
-    MkPlayerHP maxHP armor bonusHP (Val maxHP $ lteRightPlus maxHP)
+    MkPlayerHP maxHP armor bonusHP (Val maxHP $ lteRightPlusNat maxHP)
+  -- new max is higher than current maxi HP -> keep max HP, add the extra amount of HP as bonus, set the current to bonus + max
   alextrazaEffect (maxHP + (S x)) (MkPlayerHP maxHP armor bonusHP currentHitPoints)  | (CmpGT x) =
-    ?alextrazaEffect_rhs_3
+    MkPlayerHP maxHP armor (S x) (Val (maxHP + (S x)) $ lteEq (maxHP + (S x)))
 
 mutual
 
