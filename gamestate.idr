@@ -34,7 +34,7 @@ InitialHP hp = MkPlayerHP hp 0 0 (Val hp lteRightPlusZero)
 regularHeal : (heal : Nat) -> PlayerHP -> PlayerHP
 regularHeal heal (MkPlayerHP maxHP armor bonusHP currentHitPoints) =
   case boundedAdd currentHitPoints heal of
-       Left overflow => MkPlayerHP maxHP armor bonusHP (Val maxHP (lteRightPlus ?lte))
+       Left overflow => MkPlayerHP maxHP armor bonusHP (Val maxHP (lteRightPlusNat maxHP))
        Right newHP => MkPlayerHP maxHP armor bonusHP newHP
 
 alextrazaEffect : (newMax : Nat) -> PlayerHP -> PlayerHP
